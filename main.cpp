@@ -1,17 +1,13 @@
+
 #include "raylib.h"
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 
 // Tamanho do labirinto
-const int MAZE_WIDTH = 20;
-const int MAZE_HEIGHT = 15;
+const int MAZE_WIDTH = 25;
+const int MAZE_HEIGHT = 17;
 const int TILE_SIZE = 40;
-
-// Definição da posição da saída
-const int EXIT_TILE_X = MAZE_WIDTH - 2;
-const int EXIT_TILE_Y = MAZE_HEIGHT - 2;
-const Vector2 exitPosition = { EXIT_TILE_X * TILE_SIZE, EXIT_TILE_Y * TILE_SIZE };
 
 class Player {
 public:
@@ -23,6 +19,11 @@ public:
         tileX = 1;
         tileY = 1;
         color = YELLOW;
+    }
+
+    void ResetPosition() {
+        tileX = 1;
+        tileY = 1;
     }
 
     void Update(const std::vector<std::vector<int>>& maze) {
@@ -44,118 +45,158 @@ public:
     }
 };
 
-class Maze {
-public:
-    std::vector<std::vector<int>> grid;
+std::vector<std::vector<int>> maze1 = {
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+    {1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1},
+    {1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+    {1,0,1,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1},
+    {1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+};
 
-    Maze() {
-        grid.resize(MAZE_HEIGHT, std::vector<int>(MAZE_WIDTH, 1));
-        GenerateMaze();
-    }
+std::vector<std::vector<int>> maze2 = {
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,1},
+    {1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,0,1,1,1,1,1,0,1},
+    {1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1},
+    {1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,0,1,0,1},
+    {1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1},
+    {1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1},
+    {1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1},
+    {1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1},
+    {1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1},
+    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1},
+    {1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1},
+    {1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1},
+    {1,0,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
 
-    void GenerateMaze() {
-        for (int y = 1; y < MAZE_HEIGHT - 1; y++) {
-            for (int x = 1; x < MAZE_WIDTH - 1; x++) {
-                grid[y][x] = 0;
-            }
-        }
-    }
+std::vector<std::vector<int>> maze3 = {
+    {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
+    {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1},
+    {1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1},
+    {1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
 
-    void Draw(const Player& player) {
-        for (int y = 0; y < MAZE_HEIGHT; y++) {
-            for (int x = 0; x < MAZE_WIDTH; x++) {
-                if (grid[y][x] == 1) {
-                    DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, DARKGRAY);
-                } else {
-                    if (abs(player.tileX - x) <= 1 && abs(player.tileY - y) <= 1) {
-                        DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, LIGHTGRAY);
-                    }
-                }
-            }
-        }
-    }
+struct Level {
+    std::vector<std::vector<int>> maze;
+    Vector2 exit;
 };
 
 class Game {
 public:
     Player player;
-    Maze maze;
     float timer;
     bool gameOver;
     bool venceu;
     int difficulty;
+    int currentLevel;
+    std::vector<Level> levels;
 
-    Game() : timer(60.0f), gameOver(false), venceu(false), difficulty(1) {}
+    Game() : timer(60.0f), gameOver(false), venceu(false), difficulty(1), currentLevel(0) {
+        levels = {
+            { maze1, {23, 1} },
+            { maze2, {23, 8} },
+            { maze3, {1, 1} }
+        };
+    }
 
     void SetDifficulty(int difficultyChoice) {
         difficulty = difficultyChoice;
-        if (difficulty == 1) timer = 120.0f; // Fácil
-        if (difficulty == 2) timer = 60.0f;  // Médio
-        if (difficulty == 3) timer = 45.0f;  // Difícil
+        if (difficulty == 1) timer = 120.0f;
+        if (difficulty == 2) timer = 60.0f;
+        if (difficulty == 3) timer = 45.0f;
+    }
+
+    void NextLevel() {
+        currentLevel++;
+        if (currentLevel >= levels.size()) {
+            venceu = true;
+            gameOver = true;
+        } else {
+            player.ResetPosition();
+        }
     }
 
     void Update() {
         if (gameOver) return;
 
-        player.Update(maze.grid);
+        player.Update(levels[currentLevel].maze);
         timer -= GetFrameTime();
 
-        if (timer <= 0) {
-            gameOver = true;
-        }
+        if (timer <= 0) gameOver = true;
 
-        if (!venceu && CheckVictory()) {
-            venceu = true;
-            gameOver = true;
-        }
+        if (CheckVictory()) NextLevel();
     }
 
     bool CheckVictory() {
-        return (player.tileX == EXIT_TILE_X && player.tileY == EXIT_TILE_Y);
+        return (player.tileX == (int)levels[currentLevel].exit.x && player.tileY == (int)levels[currentLevel].exit.y);
     }
 
     void Draw() {
-        maze.Draw(player);
+        auto& maze = levels[currentLevel].maze;
+        for (int y = 0; y < MAZE_HEIGHT; y++) {
+            for (int x = 0; x < MAZE_WIDTH; x++) {
+                if (maze[y][x] == 1) {
+                    DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, DARKGRAY);
+                } else {
+                    if (abs(player.tileX - x) <= 1 && abs(player.tileY - y) <= 1)
+                        DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, LIGHTGRAY);
+                }
+            }
+        }
+
         player.Draw();
 
-        if (abs(player.tileX - EXIT_TILE_X) <= 2 && abs(player.tileY - EXIT_TILE_Y) <= 2) {
-            DrawRectangle(EXIT_TILE_X * TILE_SIZE, EXIT_TILE_Y * TILE_SIZE, TILE_SIZE, TILE_SIZE, GOLD);
-        }
+        Vector2 exit = levels[currentLevel].exit;
+        if (abs(player.tileX - exit.x) <= 2 && abs(player.tileY - exit.y) <= 2)
+            DrawRectangle(exit.x * TILE_SIZE, exit.y * TILE_SIZE, TILE_SIZE, TILE_SIZE, GOLD);
 
         DrawText(TextFormat("Tempo: %.2f", timer), 10, 10, 20, DARKBLUE);
 
         if (gameOver) {
-            if (venceu) {
-                DrawText("Vitória!", 300, 250, 40, GREEN);
-            } else {
-                DrawText("Game Over!", 300, 250, 40, RED);
-            }
+            DrawText(venceu ? "Vitória!" : "Game Over!", 300, 250, 40, venceu ? GREEN : RED);
         }
     }
 
     void DrawDifficultyMenu() {
         const int screenWidth = GetScreenWidth();
-    
-        const char* title = "Escolha uma Dificuldade:";
-        const char* easy = "1 - Easy  ";
-        const char* medium = "2 - Medium";
-        const char* hard = "3 - Hard  ";
-    
-        int titleWidth = MeasureText(title, 40);
-        int easyWidth = MeasureText(easy, 30);
-        int mediumWidth = MeasureText(medium, 30);
-        int hardWidth = MeasureText(hard, 30);
-    
-        DrawText(title, (screenWidth - titleWidth) / 2, 200, 40, WHITE);
-        DrawText(easy, (screenWidth - easyWidth) / 2, 250, 30, WHITE);
-        DrawText(medium, (screenWidth - mediumWidth) / 2, 300, 30, WHITE);
-        DrawText(hard, (screenWidth - hardWidth) / 2, 350, 30, WHITE);
+        DrawText("Escolha uma Dificuldade:", screenWidth/2 - 200, 200, 40, WHITE);
+        DrawText("1 - Fácil", screenWidth/2 - 100, 260, 30, WHITE);
+        DrawText("2 - Médio", screenWidth/2 - 100, 310, 30, WHITE);
+        DrawText("3 - Difícil", screenWidth/2 - 100, 360, 30, WHITE);
     }
-    
 };
 
 int main() {
-    InitWindow(800, 600, "LightEscape");
+    InitWindow(MAZE_WIDTH * TILE_SIZE, MAZE_HEIGHT * TILE_SIZE, "LightEscape");
     SetTargetFPS(60);
 
     Game game;
