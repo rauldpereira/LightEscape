@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <cstdio>
 
 // Tamanho do labirinto
 const int MAZE_WIDTH = 25;
@@ -14,6 +15,8 @@ public:
     int tileX;
     int tileY;
     Color color;
+    float moveDelay = 0.15f;
+    float moveTimer = 0.0f;
 
     Player() {
         tileX = 1;
@@ -24,13 +27,28 @@ public:
     void ResetPosition() {
         tileX = 1;
         tileY = 1;
+        moveTimer = 0.0f;
     }
 
     void Update(const std::vector<std::vector<int>>& maze) {
-        if (IsKeyPressed(KEY_UP) && maze[tileY - 1][tileX] == 0) tileY--;
-        if (IsKeyPressed(KEY_DOWN) && maze[tileY + 1][tileX] == 0) tileY++;
-        if (IsKeyPressed(KEY_LEFT) && maze[tileY][tileX - 1] == 0) tileX--;
-        if (IsKeyPressed(KEY_RIGHT) && maze[tileY][tileX + 1] == 0) tileX++;
+        moveTimer -= GetFrameTime();
+        
+        if ((IsKeyPressed(KEY_UP) || (IsKeyDown(KEY_UP) && moveTimer <= 0.0f)) && maze[tileY - 1][tileX] == 0) {
+            tileY--;
+            moveTimer = moveDelay;
+        }
+        else if ((IsKeyPressed(KEY_DOWN) || (IsKeyDown(KEY_DOWN) && moveTimer <= 0.0f)) && maze[tileY + 1][tileX] == 0) {
+            tileY++;
+            moveTimer = moveDelay;
+        }
+        else if ((IsKeyPressed(KEY_LEFT) || (IsKeyDown(KEY_LEFT) && moveTimer <= 0.0f)) && maze[tileY][tileX - 1] == 0) {
+            tileX--;
+            moveTimer = moveDelay;
+        }
+        else if ((IsKeyPressed(KEY_RIGHT) || (IsKeyDown(KEY_RIGHT) && moveTimer <= 0.0f)) && maze[tileY][tileX + 1] == 0) {
+            tileX++;
+            moveTimer = moveDelay;
+        }
     }
 
     Vector2 GetPixelPosition() const {
@@ -46,46 +64,6 @@ public:
 };
 
 std::vector<std::vector<int>> maze1 = {
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
-    {1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1},
-    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
-    {1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1},
-    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
-    {1,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1},
-    {1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
-    {1,0,1,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1},
-    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
-    {1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1},
-    {1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
-    {1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1},
-    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
-    {1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-};
-
-std::vector<std::vector<int>> maze2 = {
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,1},
-    {1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,0,1,1,1,1,1,0,1},
-    {1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1},
-    {1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,0,1,0,1},
-    {1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1},
-    {1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1},
-    {1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1},
-    {1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1},
-    {1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1},
-    {1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1},
-    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1},
-    {1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1},
-    {1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1},
-    {1,0,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1},
-    {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
-
-std::vector<std::vector<int>> maze3 = {
     {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1},
@@ -105,6 +83,46 @@ std::vector<std::vector<int>> maze3 = {
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
+std::vector<std::vector<int>> maze2 = {
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,1},
+    {1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,0,1,1,1,1,1,0,1},
+    {1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,1},
+    {1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,0,1,0,1},
+    {1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1},
+    {1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1},
+    {1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1},
+    {1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1},
+    {1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1},
+    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1},
+    {1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1},
+    {1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1},
+    {1,0,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
+
+std::vector<std::vector<int>> maze3 = {
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+    {1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1},
+    {1,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+    {1,0,1,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1},
+    {1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1},
+    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,1},
+    {1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+};
+
 struct Level {
     std::vector<std::vector<int>> maze;
     Vector2 exit;
@@ -122,9 +140,9 @@ public:
 
     Game() : timer(60.0f), gameOver(false), venceu(false), difficulty(1), currentLevel(0) {
         levels = {
-            { maze1, {23, 1} },
-            { maze2, {23, 8} },
-            { maze3, {1, 1} }
+            { maze1, {11, 13} },
+            { maze2, {19, 15} },
+            { maze3, {20, 7} }
         };
     }
 
@@ -145,15 +163,22 @@ public:
         }
     }
 
+    float tempoFinal = 0.0f;
+
     void Update() {
         if (gameOver) return;
-
+    
         player.Update(levels[currentLevel].maze);
         timer -= GetFrameTime();
-
+    
         if (timer <= 0) gameOver = true;
-
-        if (CheckVictory()) NextLevel();
+    
+        if (CheckVictory()) {
+            if (currentLevel == levels.size() - 1) {
+                tempoFinal = timer; // Salva o tempo restante ao vencer a última fase
+            }
+            NextLevel();
+        }
     }
 
     bool CheckVictory() {
@@ -161,29 +186,56 @@ public:
     }
 
     void Draw() {
+        if (gameOver && venceu) {
+            const int screenWidth = GetScreenWidth();
+
+            const char* vitoriaMsg = "Vitória!";
+            int vitoriaFontSize = 40;
+            int vitoriaWidth = MeasureText(vitoriaMsg, vitoriaFontSize);
+            DrawText(vitoriaMsg, (screenWidth - vitoriaWidth) / 2, 180, vitoriaFontSize, GREEN);
+    
+            char tempoMsg[64];
+            snprintf(tempoMsg, sizeof(tempoMsg), "Tempo restante: %.2f segundos", tempoFinal);
+            int tempoFontSize = 30;
+            int tempoWidth = MeasureText(tempoMsg, tempoFontSize);
+            DrawText(tempoMsg, (screenWidth - tempoWidth) / 2, 240, tempoFontSize, YELLOW);
+    
+            const char* instrucaoMsg = "Pressione ENTER para voltar ao menu";
+            int instrucaoFontSize = 30;
+            int instrucaoWidth = MeasureText(instrucaoMsg, instrucaoFontSize);
+            DrawText(instrucaoMsg, (screenWidth - instrucaoWidth) / 2, 300, instrucaoFontSize, WHITE);
+    
+            return;
+        }
+        if (gameOver) {
+            const int screenWidth = GetScreenWidth();
+            const char* gameOverMsg = "Game Over!";
+            int fontSize = 40;
+            int textWidth = MeasureText(gameOverMsg, fontSize);
+            DrawText(gameOverMsg, (screenWidth - textWidth) / 2, 250, fontSize, RED);
+            return;
+        }
+
         auto& maze = levels[currentLevel].maze;
         for (int y = 0; y < MAZE_HEIGHT; y++) {
             for (int x = 0; x < MAZE_WIDTH; x++) {
                 if (maze[y][x] == 1) {
-                    DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, DARKGRAY);
+                    DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, BLACK);
                 } else {
                     if (abs(player.tileX - x) <= 1 && abs(player.tileY - y) <= 1)
                         DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, LIGHTGRAY);
                 }
             }
         }
-
+    
         player.Draw();
-
+    
         Vector2 exit = levels[currentLevel].exit;
-        if (abs(player.tileX - exit.x) <= 2 && abs(player.tileY - exit.y) <= 2)
+        if (abs(player.tileX - exit.x) <= 1 && abs(player.tileY - exit.y) <= 1)
             DrawRectangle(exit.x * TILE_SIZE, exit.y * TILE_SIZE, TILE_SIZE, TILE_SIZE, GOLD);
-
+    
         DrawText(TextFormat("Tempo: %.2f", timer), 10, 10, 20, DARKBLUE);
-
-        if (gameOver) {
-            DrawText(venceu ? "Vitória!" : "Game Over!", 300, 250, 40, venceu ? GREEN : RED);
-        }
+    
     }
 
     void DrawDifficultyMenu() {
@@ -194,6 +246,8 @@ public:
         DrawText("3 - Difícil", screenWidth/2 - 100, 360, 30, WHITE);
     }
 };
+
+
 
 int main() {
     InitWindow(MAZE_WIDTH * TILE_SIZE, MAZE_HEIGHT * TILE_SIZE, "LightEscape");
@@ -222,7 +276,12 @@ int main() {
             game.DrawDifficultyMenu();
             EndDrawing();
         } else {
-            game.Update();
+            if (game.gameOver && game.venceu && IsKeyPressed(KEY_ENTER)) {
+                game = Game();
+                inMenu = true;
+            } else {
+                game.Update();
+            }
 
             BeginDrawing();
             ClearBackground(BLACK);
