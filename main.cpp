@@ -4,17 +4,15 @@
 #include <ctime>
 #include <cstdio>
 
-// Definições de tamanho do labirinto e dos tiles
 const int MAZE_WIDTH = 25;
 const int MAZE_HEIGHT = 17;
 const int TILE_SIZE = 40;
 
-// Classe que representa o jogador
 class Player {
 public:
-    int tileX; // Posição X no grid do labirinto
-    int tileY; // Posição Y no grid do labirinto
-    Color color; // Cor do jogador
+    int tileX; 
+    int tileY; 
+    Color color;
     float moveDelay = 0.15f; // Delay entre movimentos contínuos
     float moveTimer = 0.0f;  // Timer para controlar o delay
 
@@ -68,9 +66,9 @@ public:
     // Desenha o jogador e sua coroa
     void Draw() {
         Vector2 pos = GetPixelPosition();
-        DrawCircleV(pos, TILE_SIZE / 2, color); // Corpo do jogador
+        DrawCircleV(pos, TILE_SIZE / 2, color);
     
-        // Desenho da coroa (detalhes visuais)
+        // Desenho da coroa 
         float crownBaseY = pos.y - TILE_SIZE / 2 + 4;
         float crownHeight = 18;
         float crownWidth = TILE_SIZE * 0.8f;
@@ -108,7 +106,7 @@ public:
         // Base da coroa
         DrawRectangle(pos.x - crownWidth / 2, crownBaseY, crownWidth, 4, GOLD);
     
-        // Pontos coloridos na base da coroa
+        // Joias na base da coroa
         float dotRadius = 3.5f;
         DrawCircle(pos.x - crownWidth / 3, crownBaseY + 2, dotRadius, RED);
         DrawCircle(pos.x, crownBaseY + 2, dotRadius, PINK);
@@ -178,22 +176,21 @@ std::vector<std::vector<int>> maze3 = {
 };
 
 
-// Estrutura para representar um nível (labirinto + saída)
+// Estrutura para representar um nível
 struct Level {
     std::vector<std::vector<int>> maze;
     Vector2 exit; // Posição da saída
 };
 
-// Classe principal do jogo
 class Game {
 public:
     Player player;
-    float timer; // Tempo restante
-    bool gameOver; // Se o jogo acabou
-    bool venceu;   // Se venceu o jogo
-    int difficulty; // Dificuldade escolhida
-    int currentLevel; // Nível atual
-    std::vector<Level> levels; // Lista de níveis
+    float timer; 
+    bool gameOver; 
+    bool venceu; 
+    int difficulty;
+    int currentLevel;
+    std::vector<Level> levels;
 
     Game() : timer(60.0f), gameOver(false), venceu(false), difficulty(1), currentLevel(0) {
         // Inicializa os níveis e as posições de saída
@@ -328,7 +325,6 @@ void DrawStartScreen() {
     DrawText("Pressione ENTER para começar", screenWidth/2 - 220, 320, 30, WHITE);
 }
 
-// Função principal
 int main() {
     InitWindow(MAZE_WIDTH * TILE_SIZE, MAZE_HEIGHT * TILE_SIZE, "LightEscape");
     SetTargetFPS(60);
@@ -337,7 +333,6 @@ int main() {
     bool showStartScreen = true;
     bool inMenu = false;
 
-    // Loop principal do jogo
     while (!WindowShouldClose()) {
         if (showStartScreen) {
             // Tela inicial
