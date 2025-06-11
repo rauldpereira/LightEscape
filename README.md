@@ -1,3 +1,1 @@
 # LightEscape
-# ou
-# Labirinto Sombrio
